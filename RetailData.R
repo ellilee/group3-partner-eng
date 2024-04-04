@@ -35,20 +35,44 @@ glu_rows <- retail[grepl("glu", retail$the_data, ignore.case = TRUE) | grepl("gl
 print(glu_rows)
 
 # #######################
-# PROCESSING ZIPCODE ROWS
+# EXECUTIVE SUMMARY ROWS
 # #######################
 
+# Identifying executive summary info
+#               - seems like "project_zip" (under document_spot) denotes zipcode
+#               - and "gross_building" denotes square footage
+
+# Select zipcode rows
 zip_code_rows <- retail[grepl("project_zip", retail$document_spot, ignore.case = TRUE), ]
 
 # Convert zip codes to factors to avoid R considering zipcodes as numerical 
 zip_code_rows$the_data <- as.factor(zip_code_rows$the_data)
 zip_code_rows$document_text <- as.factor(zip_code_rows$document_text)
 
-# NEXT STEPS: - identifying executive summary info
-#               - seems like project_zip (under document_spot) denotes "zipcode"
-#               - but where is square footage?
-#                 - after finding, can actually find odds ratios and correlations
-#
+# Select square footage rows
+sqft_rows <- retail[grepl("gross_building", retail$document_spot, ignore.case = TRUE), ]
 
 
-head(retail)
+
+#########################
+# BLANKS IN OUTSIDE_NAME
+#########################
+# Find rows with blank values in the "outside_name" column
+blank_values <- retail$outside_name == ""
+rows_with_blank_values <- retail[blank_values, c("project_id", "outside_name")]
+print(rows_with_blank_values)
+print(dim(rows_with_blank_values))
+
+#########################
+# BLANKS IN DOC_SPOT
+#########################
+# Find rows with blank values in the "document_spot" column
+blank_values_document_spot <- retail$document_spot == ""
+rows_with_blank_document_spot <- retail[blank_values_document_spot, c("project_id", "document_spot")]
+print(rows_with_blank_document_spot)
+print(dim(rows_with_blank_document_spot))
+
+# No blanks in document_spot, so can infer blanks in outside_name (?)
+
+
+
